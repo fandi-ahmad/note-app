@@ -1,0 +1,17 @@
+{
+  "posts": [
+    {
+      "title": "judul catatan",
+      "note": "isi catatan",
+      "create_at": "2022-12-07"
+    }
+  ],
+  "data": [
+    {
+      "id": 1,
+      "title": "example title",
+      "note": "typing your note here",
+      "create_at": "2022-12-11"
+    }
+  ]
+}
