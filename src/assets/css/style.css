@@ -47,9 +47,14 @@
     border: 0px;
     outline: 0px;
 }
-.note-list{
+.overflow{
     overflow-y: scroll;
 }
 .transition{
     transition: all .5s ease-in;
+}
+.note-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }

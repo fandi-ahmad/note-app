@@ -15,21 +15,20 @@
             
             <!-- list note -->
             <div id="noteList" class="transition" style="width: 100%; border-left: 3px solid var(--hard-blue);">
-                <div class="px-3 pt-3 h-100 bg-soft-blue note-list">
+                <div class="px-3 pt-3 h-100 bg-soft-blue overflow">
                     <div class="w-100 py-2">
                         <BaseSearch />
-                        <div v-for="(noteData, index) in noteData" :key="index" class="bg-white rounded rounded-2 p-2 my-2 d-flex justify-content-between">
-                            <div >
-                                <div class="fw-bold">{{ noteData.title }}</div>
-                                <div>{{ noteData.note }}</div>
-                                <small>{{ noteData.create_at }}</small>
-                            </div>
-                            <div>
-                                <div @click="editNote(noteData.id)">
-                                    <i class="fa-solid fa-pen text-primary pointer"></i>
+                        <div class="note-list pt-2">
+                            <div v-for="(noteData, index) in noteData" :key="index" class="bg-white rounded rounded-2 p-2 d-flex justify-content-between" style="width: 290px;">
+                                <div @click="editNote(noteData.id)" class="pointer w-100">
+                                    <div class="fw-bold">{{ noteData.title }}</div>
+                                    <div>{{ noteData.note }}</div>
+                                    <small>{{ noteData.create_at }}</small>
                                 </div>
-                                <div @click="deleteNote(noteData.id)">
-                                    <i class="fa-solid fa-trash text-danger pointer"></i>
+                                <div>
+                                    <div @click="deleteNote(noteData.id)">
+                                        <i class="fa-solid fa-trash text-danger pointer"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -55,11 +54,13 @@ import { useRouter, useRoute } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 import axios from 'axios';
+import Alert from '../assets/sweetAlert.js'
 
 // binding for open and close note
 const v = reactive({
     bit: 0,
-    noteClass: 'fa-plus'
+    noteClass: 'fa-plus',
+    error: 'Something wrong!'
 })
 
 // get data from database
@@ -69,7 +70,7 @@ const getData = () => {
    .then((res) => {
        noteData.value = res.data
     }).catch((err) => {
-        alert('something error')
+        Alert.alertError(v.error)
     })
 }
 
@@ -108,27 +109,27 @@ const save = async () => {
         if (res) {
             axios.post('http://localhost:3000/data', noteAdd)
             .then((result) => {
-                alert('save success')
+                Alert.alertSuccess('success')
                 getData()
                 clearData()
             }).catch((err) => {
-                alert('masih belumm :(')
+                Alert.alertError(v.error)
             });
         } else {
-            alert('data tidak boleh kosong')
+            Alert.alertError('Data is required')
         }
     } else {
         if (res) {
             axios.put(`http://localhost:3000/data/${noteAdd.id}`, noteAdd)
             .then((result) => {
-                alert('save success')
+                Alert.alertSuccess('success')
                 getData()
                 clearData()
             }).catch((err) => {
-                alert('masih belumm :(')
+                Alert.alertError(v.error)
             });
         } else {
-            alert('data tidak boleh kosong')
+            Alert.alertError('Data is required')
         }
     }
 }
@@ -172,18 +173,28 @@ const editNote = (params) => {
         inputNote.value.value = noteDataEdit.note
         getData()
     }).catch((err) => {
-        console.log(err)
+        Alert.alertError(v.error)
     });
 }
 
 // delete note
 const deleteNote = (params) => {
-    axios.delete(`http://localhost:3000/data/${params}`)
+    Alert.alertConfirm({
+        title: 'Delete?',
+        confirmtext: 'Yes, Deleted it'
+    })
     .then((result) => {
-        getData()
-    }).catch((err) => {
-        console.log(err)
-    });
+        if (result.isConfirmed) {
+            axios.delete(`http://localhost:3000/data/${params}`)
+            .then((result) => {
+                getData()
+                clearData()
+                Alert.alertSuccess('success')
+            }).catch((err) => {
+                Alert.alertError(v.error)
+            });
+        }
+    })
 }
 
 const newNote = () => {
