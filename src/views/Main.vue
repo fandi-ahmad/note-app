@@ -7,35 +7,38 @@
                 <div class="d-flex flex-column align-items-between h-100">
                     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                         <input id="inputTitle" v-model="noteAdd.title" type="text" placeholder="title here" class="fs-4 w-100 border-0-fix">
-                        <button @click="cancel" class="btn btn-sm btn-danger">cancel</button>
                         <button @click="save" class="btn btn-sm btn-primary">save</button>
                     </div>
-                    <input id="inputDate" v-model="noteAdd.create_at" type="date">
                     <textarea id="inputNote" v-model="noteAdd.note" class="w-100 h-100 edit-area" placeholder="type something"></textarea>
                 </div>
             </div>
             
             <!-- list note -->
-            <div id="noteList" class="px-3 pt-3 h-100 bg-primary transition note-list" style="width: 100%;">
-                <BaseSearch />
-                <div class="w-100 py-2">
-
-                    <div v-for="(noteData, index) in noteData" :key="index" class="bg-light rounded rounded-2 p-2 my-2 d-flex justify-content-between">
-                        <div >
-                            <div class="fw-bold">{{ noteData.title }}</div>
-                            <div>{{ noteData.note }}</div>
-                            <small>{{ noteData.create_at }}</small>
-                        </div>
-                        <div>
-                            <div @click="editNote(noteData.id)">
-                                <i class="fa-solid fa-pen text-primary pointer"></i>
+            <div id="noteList" class="transition" style="width: 100%; border-left: 3px solid var(--hard-blue);">
+                <div class="px-3 pt-3 h-100 bg-soft-blue note-list">
+                    <div class="w-100 py-2">
+                        <BaseSearch />
+                        <div v-for="(noteData, index) in noteData" :key="index" class="bg-white rounded rounded-2 p-2 my-2 d-flex justify-content-between">
+                            <div >
+                                <div class="fw-bold">{{ noteData.title }}</div>
+                                <div>{{ noteData.note }}</div>
+                                <small>{{ noteData.create_at }}</small>
                             </div>
-                            <div @click="deleteNote(noteData.id)">
-                                <i class="fa-solid fa-trash text-danger pointer"></i>
+                            <div>
+                                <div @click="editNote(noteData.id)">
+                                    <i class="fa-solid fa-pen text-primary pointer"></i>
+                                </div>
+                                <div @click="deleteNote(noteData.id)">
+                                    <i class="fa-solid fa-trash text-danger pointer"></i>
+                                </div>
                             </div>
                         </div>
+    
                     </div>
+                </div>
 
+                <div @click="newNote" class="my-round fs-5 text-white pointer">
+                    <i :class="v.noteClass" class="fa-solid"></i>
                 </div>
             </div>
 
@@ -52,6 +55,12 @@ import { useRouter, useRoute } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 import axios from 'axios';
+
+// binding for open and close note
+const v = reactive({
+    bit: 0,
+    noteClass: 'fa-plus'
+})
 
 // get data from database
 let noteData = ref([])
@@ -93,6 +102,7 @@ const v$ = useVuelidate(rules, noteAdd)
 
 // save "create/update"
 const save = async () => {
+    noteAdd.create_at = new Date().toISOString().split("T")[0];
     const res = await v$.value.$validate()
     if (noteAdd.id.length >= 0) {
         if (res) {
@@ -123,11 +133,6 @@ const save = async () => {
     }
 }
 
-const cancel = () => {
-    clearData()
-    closeNote()
-}
-
 // close note area
 const closeNote = () => {
     noteArea.value.classList.add('d-none')
@@ -149,7 +154,11 @@ const openNote = () => {
 let noteDataEdit = ref([])
 // edit note
 const editNote = (params) => {
-    openNote()
+    if (v.bit != 1) {
+        openNote()
+        v.bit = 1
+        v.noteClass = 'fa-chevron-left'
+    }
     getData()
     noteAdd.id = params
     axios.get(`http://localhost:3000/data/${params}`)
@@ -158,11 +167,9 @@ const editNote = (params) => {
         
         noteAdd.title = noteDataEdit.title
         noteAdd.note = noteDataEdit.note
-        noteAdd.create_at = noteDataEdit.create_at
 
         inputTitle.value.value = noteDataEdit.title
         inputNote.value.value = noteDataEdit.note
-        inputDate.value.value = noteDataEdit.create_at
         getData()
     }).catch((err) => {
         console.log(err)
@@ -179,6 +186,21 @@ const deleteNote = (params) => {
     });
 }
 
+const newNote = () => {
+    if (v.bit < 1) {
+        v.bit++
+        v.noteClass = 'fa-chevron-left'
+        openNote()
+        return
+    }
+    if (v.bit >= 1) {
+        v.bit--
+        v.noteClass = 'fa-plus'
+        closeNote()
+        clearData()
+    }
+}
+
 // DOM components
 const noteArea = ref(null);
 const noteList = ref(null);
@@ -191,11 +213,6 @@ onMounted(() => {
 
     noteArea.value = document.getElementById('noteArea')
     noteList.value = document.getElementById('noteList')
-
-    const newNote = document.getElementById('newNote')
-    newNote.addEventListener('click', function() {
-        openNote()
-    })
 
     inputTitle.value = document.getElementById('inputTitle')
     inputDate.value = document.getElementById('inputDate')
