@@ -10,6 +10,9 @@
                         <button @click="save" class="btn btn-sm btn-primary">save</button>
                     </div>
                     <textarea id="inputNote" v-model="noteAdd.note" class="w-100 h-100 edit-area" placeholder="type something"></textarea>
+                    <!-- <div class="overflow px-2">
+                        <ContentEditor v-model="noteAdd.note" />
+                    </div> -->
                 </div>
             </div>
             
@@ -18,8 +21,9 @@
                 <div class="px-3 pt-3 h-100 bg-soft-blue overflow">
                     <div class="w-100 py-2">
                         <BaseSearch />
+                        <!-- <input type="search" class="form-control" v-model="v.search" @keyup="filterNoteData"> -->
                         <div class="note-list pt-2">
-                            <div v-for="(noteData, index) in noteData" :key="index" class="bg-white rounded rounded-2 p-2 d-flex justify-content-between" style="width: 290px;">
+                            <div v-for="noteData in noteData" :key="noteData.id" class="bg-white rounded rounded-2 p-2 d-flex justify-content-between" style="width: 290px;">
                                 <div @click="editNote(noteData.id)" class="pointer w-100">
                                     <div class="fw-bold">{{ noteData.title }}</div>
                                     <div>{{ noteData.note }}</div>
@@ -48,6 +52,7 @@
 <script setup>
 import Sidebar from '../components/Sidebar.vue';
 import BaseSearch from '../components/BaseSearch.vue'
+import ContentEditor from '../components/ContentEditor.vue';
 
 import { ref, onMounted, reactive, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
@@ -60,7 +65,8 @@ import Alert from '../assets/sweetAlert.js'
 const v = reactive({
     bit: 0,
     noteClass: 'fa-plus',
-    error: 'Something wrong!'
+    error: 'Something wrong!',
+    search: ''
 })
 
 // get data from database
