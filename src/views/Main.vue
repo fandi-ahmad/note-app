@@ -10,9 +10,6 @@
                         <button @click="save" class="btn btn-sm btn-primary">save</button>
                     </div>
                     <textarea id="inputNote" v-model="noteAdd.note" class="w-100 h-100 edit-area" placeholder="type something"></textarea>
-                    <!-- <div class="overflow px-2">
-                        <ContentEditor v-model="noteAdd.note" />
-                    </div> -->
                 </div>
             </div>
             
@@ -21,7 +18,6 @@
                 <div class="px-3 pt-3 h-100 bg-soft-blue overflow">
                     <div class="w-100 py-2">
                         <BaseSearch />
-                        <!-- <input type="search" class="form-control" v-model="v.search" @keyup="filterNoteData"> -->
                         <div class="note-list pt-2">
                             <div v-for="noteData in noteData" :key="noteData.id" class="bg-white rounded rounded-2 p-2 d-flex justify-content-between" style="width: 290px;">
                                 <div @click="editNote(noteData.id)" class="pointer w-100">
@@ -235,11 +231,6 @@ onMounted(() => {
     inputDate.value = document.getElementById('inputDate')
     inputNote.value = document.getElementById('inputNote')
 
-    const setting = document.getElementById('setting')
-    // for check data and show in console log
-    setting.addEventListener('click', function() {
-        console.log(noteAdd)
-    })
 })
 
 </script>
