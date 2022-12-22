@@ -7,7 +7,6 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 - [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
 
 
-======================================
 ## Getting started
 1. Make sure you have installed Node JS
 2. install vue js in globally
@@ -15,19 +14,17 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 npm install -g @vue/cli
 ```
 
-3. Install depedencies
+3. open terminal in your computer and follow this code
 ```
+git clone https://github.com/fandi-ahmad/note-app.git
+cd note-app
 npm install
 ```
 
-4. Install [JSON Server](https://github.com/typicode/json-server)
+# This project in collaboration with [MRizki28](https://github.com/MRizki28/note-backend-app) for Backend
 
+## Run this app (use 2 terminal)
 ```
-npm install -g json-server
-```
-
-## Run this app (use 2 terminals)
-```
-json-server --watch db.json
-npm run dev
+php artisan serve   // backend
+npm run dev         // frontend
 ```
