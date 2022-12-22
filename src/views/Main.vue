@@ -8,7 +8,6 @@
                     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                         <input id="inputTitle" v-model="noteAdd.title" type="text" placeholder="title here" class="fs-4 w-100 border-0-fix">
                         <button @click="save" class="btn btn-sm btn-primary">save</button>
-                        <button @click="cek">cek data</button>
                     </div>
                     <textarea id="inputNote" v-model="noteAdd.note" class="w-100 h-100 edit-area" placeholder="type something"></textarea>
                 </div>
@@ -79,10 +78,6 @@ const getData = () => {
     })
 }
 
-const cek = () => {
-    console.log(noteAdd)
-}
-
 // data storage for send to database
 const noteAdd = reactive({
     id: '',
@@ -136,7 +131,6 @@ const save = async () => {
                 clearData()
             }).catch((err) => {
                 Alert.alertError(v.error)
-                console.log(err)
             });
         } else {
             Alert.alertError('Data is required')
