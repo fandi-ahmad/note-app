@@ -8,6 +8,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                         <input id="inputTitle" v-model="noteAdd.title" type="text" placeholder="title here" class="fs-4 w-100 border-0-fix">
                         <button @click="save" class="btn btn-sm btn-primary">save</button>
+                        <button @click="cek">cek data</button>
                     </div>
                     <textarea id="inputNote" v-model="noteAdd.note" class="w-100 h-100 edit-area" placeholder="type something"></textarea>
                 </div>
@@ -20,10 +21,10 @@
                         <BaseSearch />
                         <div class="note-list pt-2">
                             <div v-for="noteData in noteData" :key="noteData.id" class="bg-white rounded rounded-2 p-2 d-flex justify-content-between" style="width: 290px;">
-                                <div @click="editNote(noteData.id)" class="pointer w-100">
+                                <div @click="editNote(noteData.id, noteData.title, noteData.note)" class="pointer w-100">
                                     <div class="fw-bold">{{ noteData.title }}</div>
                                     <div>{{ noteData.note }}</div>
-                                    <small>{{ noteData.create_at }}</small>
+                                    <small>{{ noteData.created_at }}</small>
                                 </div>
                                 <div>
                                     <div @click="deleteNote(noteData.id)">
@@ -32,7 +33,6 @@
                                 </div>
                             </div>
                         </div>
-    
                     </div>
                 </div>
 
@@ -57,6 +57,8 @@ import { required, minLength } from '@vuelidate/validators'
 import axios from 'axios';
 import Alert from '../assets/sweetAlert.js'
 
+import NoteApp from '../api/NoteApp.js'
+
 // binding for open and close note
 const v = reactive({
     bit: 0,
@@ -68,12 +70,17 @@ const v = reactive({
 // get data from database
 let noteData = ref([])
 const getData = () => {
-    axios.get('http://localhost:3000/data')
-   .then((res) => {
-       noteData.value = res.data
+    NoteApp.get_list()
+    .then((res) => {
+        noteData.value = res.data
+        noteData.value = noteData.value.data
     }).catch((err) => {
         Alert.alertError(v.error)
     })
+}
+
+const cek = () => {
+    console.log(noteAdd)
 }
 
 // data storage for send to database
@@ -109,7 +116,7 @@ const save = async () => {
     const res = await v$.value.$validate()
     if (noteAdd.id.length >= 0) {
         if (res) {
-            axios.post('http://localhost:3000/data', noteAdd)
+            NoteApp.upsert(noteAdd)
             .then((result) => {
                 Alert.alertSuccess('success')
                 getData()
@@ -122,13 +129,14 @@ const save = async () => {
         }
     } else {
         if (res) {
-            axios.put(`http://localhost:3000/data/${noteAdd.id}`, noteAdd)
+            NoteApp.update(noteAdd.id, noteAdd)
             .then((result) => {
                 Alert.alertSuccess('success')
                 getData()
                 clearData()
             }).catch((err) => {
                 Alert.alertError(v.error)
+                console.log(err)
             });
         } else {
             Alert.alertError('Data is required')
@@ -154,29 +162,17 @@ const openNote = () => {
     }, 500);
 }
 
-let noteDataEdit = ref([])
 // edit note
-const editNote = (params) => {
+const editNote = (id, title, note) => {
     if (v.bit != 1) {
         openNote()
         v.bit = 1
         v.noteClass = 'fa-chevron-left'
     }
     getData()
-    noteAdd.id = params
-    axios.get(`http://localhost:3000/data/${params}`)
-    .then((result) => {
-        noteDataEdit = result.data
-        
-        noteAdd.title = noteDataEdit.title
-        noteAdd.note = noteDataEdit.note
-
-        inputTitle.value.value = noteDataEdit.title
-        inputNote.value.value = noteDataEdit.note
-        getData()
-    }).catch((err) => {
-        Alert.alertError(v.error)
-    });
+    noteAdd.id = id
+    noteAdd.title = title
+    noteAdd.note = note
 }
 
 // delete note
