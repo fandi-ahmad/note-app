@@ -9,24 +9,25 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 
 ======================================
 ## Getting started
-- Make sure you have installed Node JS
-- Install [JSON Server](https://github.com/typicode/json-server)
+1. Make sure you have installed Node JS
+2. install vue js in globally
+```
+npm install -g @vue/cli
+```
+
+3. Install depedencies
+```
+npm install
+```
+
+4. Install [JSON Server](https://github.com/typicode/json-server)
 
 ```
 npm install -g json-server
 ```
 
-- Run JSON Server
+## Run this app (use 2 terminals)
 ```
 json-server --watch db.json
-```
-
-- Install depedencies
-```
-npm install
-```
-
-- Run the project
-```
 npm run dev
 ```
