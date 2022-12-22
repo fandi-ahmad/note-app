@@ -12,7 +12,7 @@ cd note-app
 npm install
 ```
 
-4. Instalation for Backend [click here](https://github.com/MRizki28/note-backend-app)
+4. Installation for Backend [click here](https://github.com/MRizki28/note-backend-app)
 
 ### Run this app (use 2 terminal)
 ```
