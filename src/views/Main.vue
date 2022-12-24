@@ -23,7 +23,7 @@
                                 <div @click="editNote(noteData.id, noteData.title, noteData.note)" class="pointer w-100">
                                     <div class="fw-bold">{{ noteData.title }}</div>
                                     <div>{{ noteData.note }}</div>
-                                    <small>{{ noteData.created_at }}</small>
+                                    <small>{{ noteData.updated_at }}</small>
                                 </div>
                                 <div>
                                     <div @click="deleteNote(noteData.id)">
@@ -83,7 +83,6 @@ const noteAdd = reactive({
     id: '',
     title: '',
     note: '',
-    create_at: ''
 })
 
 // clear data in form input
@@ -91,14 +90,12 @@ const clearData = () => {
     noteAdd.id = ''
     noteAdd.title = ''
     noteAdd.note = ''
-    noteAdd.create_at = ''
 }
 
 const rules = computed(() => {
     return{
         title: {required},
         note: {required},
-        create_at: {required},
     }
 })
 
@@ -107,7 +104,6 @@ const v$ = useVuelidate(rules, noteAdd)
 
 // save "create/update"
 const save = async () => {
-    noteAdd.create_at = new Date().toISOString().split("T")[0];
     const res = await v$.value.$validate()
     if (noteAdd.id.length >= 0) {
         if (res) {
