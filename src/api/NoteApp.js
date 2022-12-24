@@ -1,6 +1,6 @@
 import Api from './Main.js'
 
-const baseURL = import.meta.env.VITE_GATE_ACL_URL
+const baseURL = import.meta.env
 const pathUrl = 'http://127.0.0.1:8000/api/note'
 
 export default {
