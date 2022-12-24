@@ -59,3 +59,13 @@
     flex-wrap: wrap;
     gap: 10px;
 }
+.note-card{
+    display: flex;
+    justify-content: space-between;
+    width: 290px;
+    background-color: white;
+}
+.note-card:hover{
+    background-color: #eaeaea;
+    transition: all .2s ease;
+}

@@ -19,7 +19,7 @@
                     <div class="w-100 py-2">
                         <BaseSearch />
                         <div class="note-list pt-2">
-                            <div v-for="noteData in noteData" :key="noteData.id" class="bg-white rounded rounded-2 p-2 d-flex justify-content-between" style="width: 290px;">
+                            <div v-for="noteData in noteData" :key="noteData.id" class="rounded rounded-2 p-2 note-card">
                                 <div @click="editNote(noteData.id, noteData.title, noteData.note)" class="pointer w-100">
                                     <div class="fw-bold">{{ noteData.title }}</div>
                                     <div>{{ noteData.note }}</div>
