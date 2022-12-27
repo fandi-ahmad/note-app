@@ -14,5 +14,9 @@ export default {
 
     update(id, payload) {
         return Api(baseURL).put(`${pathUrl}/${id}`, payload)
+    },
+
+    delete(id) {
+        return Api(baseURL).delete(`${pathUrl}/${id}`)
     }
 }

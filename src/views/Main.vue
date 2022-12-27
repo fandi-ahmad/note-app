@@ -173,7 +173,7 @@ const deleteNote = (params) => {
     })
     .then((result) => {
         if (result.isConfirmed) {
-            axios.delete(`http://localhost:3000/data/${params}`)
+            NoteApp.delete(params)
             .then((result) => {
                 getData()
                 clearData()
