@@ -3,23 +3,27 @@
         <div class="d-flex flex-row justify-content-between h-100vh">
             <Sidebar impStyle="background-color: var(--soft-blue);">
                 <template v-slot:colorSet>
-                    <input type="color" class="pointer w-75" style="height: 20px;" v-model="v.color" id="colorId">
+                    <input type="color" class="pointer input-color" v-model="v.color" id="colorId">
+                    <input type="color" class="pointer input-color" v-model="v.colorSecond" id="colorSecond">
+                    <input type="color" class="pointer input-color" v-model="v.colorBoard" id="colorBoard">
                 </template>
             </Sidebar>
             <!-- note area -->
-            <div id="noteArea" class="px-4 pt-3 d-none transition" style="width: 0%;">
+            <div id="noteArea" class="px-4 pt-3 d-none transition" style="width: 0%; background-color: #ffffff;">
                 <div class="d-flex flex-column align-items-between h-100">
                     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
-                        <input id="inputTitle" v-model="noteAdd.title" type="text" placeholder="title here" class="fs-4 w-100 border-0-fix">
-                        <button @click="save" class="btn btn-sm btn-primary">save</button>
+                        <input id="inputTitle" v-model="noteAdd.title" type="text" placeholder="title here" class="fs-4 w-100 border-0-fix bg-transparent">
+                        <button id="saveBtn" @click="save" class="btn btn-sm text-white p-0 text-center" style="background-color: var(--hard-blue); overflow: hidden; width: 75px; height: 30px;">
+                            <span class="btn-hover">save</span>
+                        </button>
                     </div>
-                    <textarea id="inputNote" v-model="noteAdd.note" class="w-100 h-100 edit-area" placeholder="type something"></textarea>
+                    <textarea id="inputNote" v-model="noteAdd.note" class="w-100 h-100 edit-area bg-transparent" placeholder="type something"></textarea>
                 </div>
             </div>
             
             <!-- list note -->
-            <div id="noteList" class="transition" style="width: 100%; border-left: 3px solid var(--hard-blue);">
-                <div class="px-3 pt-3 h-100 overflow" id="noteListBoard" style="background-color: var(--soft-blue);">
+            <div id="noteList" class="transition" style="width: 100%; ">
+                <div class="px-3 pt-3 h-100 overflow" id="noteListBoard" style="background-color: var(--soft-blue); border-left: 3px solid var(--hard-blue);">
                     <div class="w-100 py-2">
                         <BaseSearch />
                         <div class="note-list pt-2">
@@ -39,7 +43,7 @@
                     </div>
                 </div>
 
-                <div @click="newNote" class="my-round fs-5 text-white pointer">
+                <div id="newNoteIcon" @click="newNote" class="my-round fs-5 text-white pointer" style="background-color: var(--hard-blue);">
                     <i :class="v.noteClass" class="fa-solid"></i>
                 </div>
             </div>
@@ -54,10 +58,8 @@ import BaseSearch from '../components/BaseSearch.vue'
 import ContentEditor from '../components/ContentEditor.vue';
 
 import { ref, onMounted, reactive, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
-import { required, minLength } from '@vuelidate/validators'
-import axios from 'axios';
+import { required } from '@vuelidate/validators'
 import Alert from '../assets/sweetAlert.js'
 
 import NoteApp from '../api/NoteApp.js'
@@ -68,7 +70,9 @@ const v = reactive({
     noteClass: 'fa-plus',
     error: 'Something wrong!',
     search: '',
-    color: '#B5DEFF'
+    color: '#B5DEFF',
+    colorSecond: '#18a3ca',
+    colorBoard: '#ffffff'
 })
 
 // get data from database
@@ -225,11 +229,28 @@ onMounted(() => {
     const colorId = document.getElementById('colorId')
     const sidebar = document.getElementById('sidebar')
     const noteListBoard = document.getElementById('noteListBoard')
+    const colorSecond = document.getElementById('colorSecond')
+    const newNoteIcon = document.getElementById('newNoteIcon')
+    const saveBtn = document.getElementById('saveBtn')
+    const colorBoard = document.getElementById('colorBoard')
+    const noteAreaN = document.getElementById('noteArea')
     
     colorId.addEventListener('input', function() {
         let colorValue = colorId.value
         sidebar.style.backgroundColor = colorValue
         noteListBoard.style.backgroundColor = colorValue
+    })
+
+    colorSecond.addEventListener('input', function() {
+        let colorSecondValue = colorSecond.value
+        noteListBoard.style.borderLeft = '3px solid' + colorSecondValue
+        newNoteIcon.style.backgroundColor = colorSecondValue
+        saveBtn.style.backgroundColor = colorSecondValue
+    })
+
+    colorBoard.addEventListener('input', function() {
+        noteAreaN.classList.remove('transition')
+        noteAreaN.style.backgroundColor = colorBoard.value
     })
 
 })

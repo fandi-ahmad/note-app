@@ -12,9 +12,11 @@
                 <i class="fa-sharp fa-solid fa-palette"></i>
             </div>
             <div class="collapse text-center" id="color">
-                <slot name="colorSet">
-                    <!--  -->
-                </slot>
+                <div class="d-flex flex-column gap-1">
+                    <slot name="colorSet">
+                        <!--  -->
+                    </slot>
+                </div>
             </div>
 
             <div id="setting" class="text-center pointer">
