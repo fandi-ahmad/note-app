@@ -1,7 +1,11 @@
 <template>
     <div class="container-fluid p-0">
         <div class="d-flex flex-row justify-content-between h-100vh">
-            <Sidebar />
+            <Sidebar impStyle="background-color: var(--soft-blue);">
+                <template v-slot:colorSet>
+                    <input type="color" class="pointer w-75" style="height: 20px;" v-model="v.color" id="colorId">
+                </template>
+            </Sidebar>
             <!-- note area -->
             <div id="noteArea" class="px-4 pt-3 d-none transition" style="width: 0%;">
                 <div class="d-flex flex-column align-items-between h-100">
@@ -15,7 +19,7 @@
             
             <!-- list note -->
             <div id="noteList" class="transition" style="width: 100%; border-left: 3px solid var(--hard-blue);">
-                <div class="px-3 pt-3 h-100 bg-soft-blue overflow">
+                <div class="px-3 pt-3 h-100 overflow" id="noteListBoard" style="background-color: var(--soft-blue);">
                     <div class="w-100 py-2">
                         <BaseSearch />
                         <div class="note-list pt-2">
@@ -63,7 +67,8 @@ const v = reactive({
     bit: 0,
     noteClass: 'fa-plus',
     error: 'Something wrong!',
-    search: ''
+    search: '',
+    color: '#B5DEFF'
 })
 
 // get data from database
@@ -216,6 +221,16 @@ onMounted(() => {
     inputTitle.value = document.getElementById('inputTitle')
     inputDate.value = document.getElementById('inputDate')
     inputNote.value = document.getElementById('inputNote')
+    
+    const colorId = document.getElementById('colorId')
+    const sidebar = document.getElementById('sidebar')
+    const noteListBoard = document.getElementById('noteListBoard')
+    
+    colorId.addEventListener('input', function() {
+        let colorValue = colorId.value
+        sidebar.style.backgroundColor = colorValue
+        noteListBoard.style.backgroundColor = colorValue
+    })
 
 })
 
